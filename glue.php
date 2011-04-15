@@ -7,7 +7,7 @@
      * strings or regular expressions.
      *
      * When the URLs are processed:
-     *      * deliminators (/) are automatically escaped: (\/)
+     *      * delimiter (/) are automatically escaped: (\/)
      *      * The beginning and end are anchored (^ $)
      *      * An optional end slash is added (/?)
      *	    * The i option is added for case-insensitive searches
