@@ -16,7 +16,7 @@
      *
      * $urls = array(
      *     '/' => 'index',
-     *     '/page/(\d+) => 'page'
+     *     '/page/(\d+)' => 'page'
      * );
      *
      * class page {
