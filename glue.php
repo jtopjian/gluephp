@@ -45,6 +45,9 @@
 
             $method = strtoupper($_SERVER['REQUEST_METHOD']);
             $path = $_SERVER['REQUEST_URI'];
+            
+	    //avoid head requests causing 404 errors
+	    $method = ($method == 'HEAD') ? 'GET' : $method; 
 
             $found = false;
 
