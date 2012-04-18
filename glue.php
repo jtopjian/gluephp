@@ -20,8 +20,8 @@
      * );
      *
      * class page {
-     *      function GET($matches) {
-     *          echo "Your requested page " . $matches[1];
+     *      function GET($pageno) {
+     *          echo "Your requested page " . $pageno;
      *      }
      * }
      *
@@ -36,15 +36,16 @@
          * the main static function of the glue class.
          *
          * @param   array    	$urls  	    The regex-based url to class mapping
+         * @param   string      $directory  The name of the directory that the script is in
          * @throws  Exception               Thrown if corresponding class is not found
          * @throws  Exception               Thrown if no match is found
          * @throws  BadMethodCallException  Thrown if a corresponding GET,POST is not found
          *
          */
-        static function stick ($urls) {
+        static function stick ($urls, $directory) {
 
-            $method = strtoupper($_SERVER['REQUEST_METHOD']);
-            $path = $_SERVER['REQUEST_URI'];
+            $method = $_SERVER['REQUEST_METHOD'];
+            $path = trim(str_replace('/'.trim($directory, '/').'/', '', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)), '/');
             
 	    //avoid head requests causing 404 errors
 	    $method = ($method == 'HEAD') ? 'GET' : $method; 
@@ -54,14 +55,18 @@
             krsort($urls);
 
             foreach ($urls as $regex => $class) {
-                $regex = str_replace('/', '\/', $regex);
-                $regex = '^' . $regex . '\/?$';
-                if (preg_match("/$regex/i", $path, $matches)) {
+                $regex = str_replace('/', '\/', trim($regex, '/'));
+                if (preg_match("/^$regex\$/i", $path, $matches)) {
                     $found = true;
                     if (class_exists($class)) {
                         $obj = new $class;
                         if (method_exists($obj, $method)) {
-                            $obj->$method($matches);
+                        	// The first element of matches will be the entire uri
+                        	if ( isset($matches[0]) )
+                        	{
+                        		unset($matches[0]);
+                        	}
+                        	call_user_func_array(array($obj,$method), $matches);
                         } else {
                             throw new BadMethodCallException("Method, $method, not supported.");
                         }
