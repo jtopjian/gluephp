@@ -51,6 +51,10 @@
             $method = strtoupper($_SERVER['REQUEST_METHOD']);
             $path = substr($_SERVER['REQUEST_URI'], strlen(self::$baseurl));
 
+            if (strlen($_SERVER['QUERY_STRING'])) {
+                $path = substr($path, 0, strlen($path) - 1 - strlen($_SERVER['QUERY_STRING']));
+            }
+
             $found = false;
 
             krsort($urls);
