@@ -63,13 +63,13 @@
                             throw new BadMethodCallException("Method, $method, not supported.");
                         }
                     } else {
-                        throw new Exception("Class, $class, not found.");
+                        throw new InvalidArgumentException("Class, $class, not found.");
                     }
                     break;
                 }
             }
             if (!$found) {
-                throw new Exception("URL, $path, not found.");
+                throw new UnexpectedValueException("URL, $path, not found.");
             }
         }
     }
